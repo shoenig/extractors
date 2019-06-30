@@ -25,15 +25,15 @@ $ go get go.gophers.dev/pkgs/extractors
 #### Example Usage of env
 Use the `env` package to parse values from environment variables.
 ```
-	var (
-		go111module string
-		sshPID      int
-	)
+var (
+    go111module string
+    sshPID      int
+)
 
-	_ = env.ParseOS(env.Schema{
-		"GO111MODULE":   env.String(&go111module, false),
-		"SSH_AGENT_PID": env.Int(&sshPID, true),
-	})
+_ = env.ParseOS(env.Schema{
+    "GO111MODULE":   env.String(&go111module, false),
+    "SSH_AGENT_PID": env.Int(&sshPID, true),
+})
 
 ```
 
@@ -41,40 +41,40 @@ Use the `env` package to parse values from environment variables.
 Use the `formdata` package to parse values from `url.Values` (typically coming
 from ``*http.Request.Form` objects from inbound requests.
 ```
-	// typically coming from a *http.Request.Form
-	values := url.Values{
-		"user": []string{"bob"},
-		"age":  []string{"45"},
-	}
+// typically coming from a *http.Request.Form
+values := url.Values{
+    "user": []string{"bob"},
+    "age":  []string{"45"},
+}
 
-	var (
-		user string
-		age  int
-	)
+var (
+    user string
+    age  int
+)
 
-	_ = formdata.Parse(values, formdata.Schema{
-		"user": formdata.String(&user),
-		"age":  formdata.Int(&age),
-	})
+_ = formdata.Parse(values, formdata.Schema{
+    "user": formdata.String(&user),
+    "age":  formdata.Int(&age),
+})
 ```
 
 #### Example usage of urlpath
 Use the `urlpath` package to parse URL path elements when using a `gorilla/mux`
 router.
 ```
-	// with a mux handler definition like
-	router.Handle("/{kind}/{id}")
+// with a mux handler definition like
+router.Handle("/{kind}/{id}")
 
-	// in the handler implementation, parse the *http.Request URL with
-	var (
-		kind string
-		id   int
-	)
+// in the handler implementation, parse the *http.Request URL with
+var (
+    kind string
+    id   int
+)
 
-	_ = urlpath.Parse(request, urlpath.Schema{
-		"kind": urlpath.String(&kind),
-		"id":   urlpath.Int(&id),
-	})
+_ = urlpath.Parse(request, urlpath.Schema{
+    "kind": urlpath.String(&kind),
+    "id":   urlpath.Int(&id),
+})
 ```
 
 # Contributing
