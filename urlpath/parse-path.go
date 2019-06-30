@@ -1,10 +1,11 @@
-package urlpath
+package urlpath // import "go.gophers.dev/pkgs/extractors/urlpath"
 
 import (
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
+
 	"github.com/pkg/errors"
 )
 

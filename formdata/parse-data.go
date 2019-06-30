@@ -1,4 +1,4 @@
-package formdata
+package formdata // import "go.gophers.dev/pkgs/extractors/formdata"
 
 import (
 	"net/http"

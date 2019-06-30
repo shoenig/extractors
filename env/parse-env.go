@@ -1,4 +1,4 @@
-package env
+package env // import "go.gophers.dev/pkgs/extractors/env"
 
 import (
 	"os"
