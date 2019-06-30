@@ -1,4 +1,4 @@
-module github.com/shoenig/extractors
+module go.gophers.dev/pkgs/extractors
 
 go 1.12
 
