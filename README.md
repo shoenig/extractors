@@ -24,7 +24,7 @@ $ go get go.gophers.dev/pkgs/extractors
 
 #### Example Usage of env
 Use the `env` package to parse values from environment variables.
-```
+```golang
 var (
     go111module string
     sshPID      int
@@ -40,7 +40,7 @@ _ = env.ParseOS(env.Schema{
 #### Example usage of formdata
 Use the `formdata` package to parse values from `url.Values` (typically coming
 from ``*http.Request.Form` objects from inbound requests.
-```
+```golang
 // typically coming from a *http.Request.Form
 values := url.Values{
     "user": []string{"bob"},
@@ -61,7 +61,7 @@ _ = formdata.Parse(values, formdata.Schema{
 #### Example usage of urlpath
 Use the `urlpath` package to parse URL path elements when using a `gorilla/mux`
 router.
-```
+```golang
 // with a mux handler definition like
 router.Handle("/{kind}/{id}")
 
