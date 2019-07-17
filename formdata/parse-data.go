@@ -33,7 +33,7 @@ func ParseForm(r *http.Request, schema Schema) error {
 		return err
 	}
 
-	return Parse(r.PostForm, schema)
+	return Parse(r.Form, schema)
 }
 
 // A Schema describes how a set of url.Values should be parsed.
