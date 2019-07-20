@@ -1,4 +1,4 @@
-module go.gophers.dev/pkgs/extractors
+module gophers.dev/pkgs/extractors
 
 go 1.12
 

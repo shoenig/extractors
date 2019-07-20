@@ -1,4 +1,4 @@
-package urlpath // import "go.gophers.dev/pkgs/extractors/urlpath"
+package urlpath // import "gophers.dev/pkgs/extractors/urlpath"
 
 import (
 	"net/http"
