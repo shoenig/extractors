@@ -115,7 +115,7 @@ func Float(f *float64, required bool) Parser {
 	}
 }
 
-//go:generate go run github.com/gojuno/minimock/cmd/minimock -g -i Environment -s _mock.go
+//go:generate go run github.com/gojuno/minimock/v3/cmd/minimock -g -i Environment -s _mock.go
 
 type Environment interface {
 	Getenv(string) string
