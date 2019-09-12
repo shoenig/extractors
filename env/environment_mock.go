@@ -7,7 +7,7 @@ import (
 	mm_atomic "sync/atomic"
 	mm_time "time"
 
-	"github.com/gojuno/minimock"
+	"github.com/gojuno/minimock/v3"
 )
 
 // EnvironmentMock implements Environment
@@ -15,6 +15,7 @@ type EnvironmentMock struct {
 	t minimock.Tester
 
 	funcGetenv          func(s1 string) (s2 string)
+	inspectFuncGetenv   func(s1 string)
 	afterGetenvCounter  uint64
 	beforeGetenvCounter uint64
 	GetenvMock          mEnvironmentMockGetenv
@@ -80,6 +81,17 @@ func (mmGetenv *mEnvironmentMockGetenv) Expect(s1 string) *mEnvironmentMockGeten
 	return mmGetenv
 }
 
+// Inspect accepts an inspector function that has same arguments as the Environment.Getenv
+func (mmGetenv *mEnvironmentMockGetenv) Inspect(f func(s1 string)) *mEnvironmentMockGetenv {
+	if mmGetenv.mock.inspectFuncGetenv != nil {
+		mmGetenv.mock.t.Fatalf("Inspect function is already set for EnvironmentMock.Getenv")
+	}
+
+	mmGetenv.mock.inspectFuncGetenv = f
+
+	return mmGetenv
+}
+
 // Return sets up results that will be returned by Environment.Getenv
 func (mmGetenv *mEnvironmentMockGetenv) Return(s2 string) *EnvironmentMock {
 	if mmGetenv.mock.funcGetenv != nil {
@@ -133,15 +145,19 @@ func (mmGetenv *EnvironmentMock) Getenv(s1 string) (s2 string) {
 	mm_atomic.AddUint64(&mmGetenv.beforeGetenvCounter, 1)
 	defer mm_atomic.AddUint64(&mmGetenv.afterGetenvCounter, 1)
 
-	params := &EnvironmentMockGetenvParams{s1}
+	if mmGetenv.inspectFuncGetenv != nil {
+		mmGetenv.inspectFuncGetenv(s1)
+	}
+
+	mm_params := &EnvironmentMockGetenvParams{s1}
 
 	// Record call args
 	mmGetenv.GetenvMock.mutex.Lock()
-	mmGetenv.GetenvMock.callArgs = append(mmGetenv.GetenvMock.callArgs, params)
+	mmGetenv.GetenvMock.callArgs = append(mmGetenv.GetenvMock.callArgs, mm_params)
 	mmGetenv.GetenvMock.mutex.Unlock()
 
 	for _, e := range mmGetenv.GetenvMock.expectations {
-		if minimock.Equal(e.params, params) {
+		if minimock.Equal(e.params, mm_params) {
 			mm_atomic.AddUint64(&e.Counter, 1)
 			return e.results.s2
 		}
@@ -149,17 +165,17 @@ func (mmGetenv *EnvironmentMock) Getenv(s1 string) (s2 string) {
 
 	if mmGetenv.GetenvMock.defaultExpectation != nil {
 		mm_atomic.AddUint64(&mmGetenv.GetenvMock.defaultExpectation.Counter, 1)
-		want := mmGetenv.GetenvMock.defaultExpectation.params
-		got := EnvironmentMockGetenvParams{s1}
-		if want != nil && !minimock.Equal(*want, got) {
-			mmGetenv.t.Errorf("EnvironmentMock.Getenv got unexpected parameters, want: %#v, got: %#v%s\n", *want, got, minimock.Diff(*want, got))
+		mm_want := mmGetenv.GetenvMock.defaultExpectation.params
+		mm_got := EnvironmentMockGetenvParams{s1}
+		if mm_want != nil && !minimock.Equal(*mm_want, mm_got) {
+			mmGetenv.t.Errorf("EnvironmentMock.Getenv got unexpected parameters, want: %#v, got: %#v%s\n", *mm_want, mm_got, minimock.Diff(*mm_want, mm_got))
 		}
 
-		results := mmGetenv.GetenvMock.defaultExpectation.results
-		if results == nil {
+		mm_results := mmGetenv.GetenvMock.defaultExpectation.results
+		if mm_results == nil {
 			mmGetenv.t.Fatal("No results are set for the EnvironmentMock.Getenv")
 		}
-		return (*results).s2
+		return (*mm_results).s2
 	}
 	if mmGetenv.funcGetenv != nil {
 		return mmGetenv.funcGetenv(s1)

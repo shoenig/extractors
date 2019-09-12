@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
+
 	"github.com/stretchr/testify/require"
 )
 
