@@ -104,3 +104,20 @@ func (p *intParser) Parse(s string) error {
 	*p.destination = i
 	return nil
 }
+
+type uint64Parser struct {
+	destination *uint64
+}
+
+func UInt64(i *uint64) Parser {
+	return &uint64Parser{destination: i}
+}
+
+func (u uint64Parser) Parse(s string) error {
+	i, err := strconv.ParseUint(s, 10, 64)
+	if err != nil {
+		return err
+	}
+	*u.destination = i
+	return nil
+}

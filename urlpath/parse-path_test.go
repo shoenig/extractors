@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
-
 	"github.com/stretchr/testify/require"
 )
 
@@ -40,20 +39,24 @@ func Test_Parse(t *testing.T) {
 func Test_ParseValues(t *testing.T) {
 	var foo string
 	var bar int
+	var id uint64
 
 	values := map[string]string{
 		"foo": "blah",
 		"bar": "21",
+		"id":  "42",
 	}
 
 	err := ParseValues(values, Schema{
 		"foo": String(&foo),
 		"bar": Int(&bar),
+		"id":  UInt64(&id),
 	})
-	require.NoError(t, err)
 
+	require.NoError(t, err)
 	require.Equal(t, "blah", foo)
 	require.Equal(t, 21, bar)
+	require.Equal(t, uint64(42), id)
 }
 
 func Test_ParseValues_incompatible(t *testing.T) {
