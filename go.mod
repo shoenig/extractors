@@ -1,6 +1,6 @@
 module gophers.dev/pkgs/extractors
 
-go 1.12
+go 1.16
 
 require (
 	github.com/gojuno/minimock/v3 v3.0.4
