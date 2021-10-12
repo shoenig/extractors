@@ -115,6 +115,33 @@ func Float(f *float64, required bool) Parser {
 	}
 }
 
+type boolParser struct {
+	required    bool
+	destination *bool
+}
+
+func (bp *boolParser) Parse(s string) error {
+	if bp.required && s == "" {
+		return errors.New("missing")
+	} else if s == "" {
+		return nil
+	}
+
+	b, err := strconv.ParseBool(s)
+	if err != nil {
+		return errors.Wrapf(err, "unable to parse %q as bool", s)
+	}
+	*bp.destination = b
+	return nil
+}
+
+func Bool(b *bool, required bool) Parser {
+	return &boolParser{
+		required:    required,
+		destination: b,
+	}
+}
+
 //go:generate go run github.com/gojuno/minimock/v3/cmd/minimock -g -i Environment -s _mock.go
 
 type Environment interface {
