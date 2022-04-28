@@ -4,7 +4,7 @@ extractors
 Extract values from text using typed schema
 
 [![Go Report Card](https://goreportcard.com/badge/gophers.dev/pkgs/extractors)](https://goreportcard.com/report/gophers.dev/pkgs/extractors)
-[![Build Status](https://travis-ci.com/shoenig/extractors.svg?branch=master)](https://travis-ci.com/shoenig/extractors)
+[![run-ci](https://github.com/shoenig/extractors/actions/workflows/ci.yml/badge.svg)](https://github.com/shoenig/extractors/actions/workflows/ci.yml)
 [![GoDoc](https://godoc.org/gophers.dev/pkgs/extractors?status.svg)](https://godoc.org/gophers.dev/pkgs/extractors)
 ![NetflixOSS Lifecycle](https://img.shields.io/osslifecycle/shoenig/extractors.svg)
 ![GitHub](https://img.shields.io/github/license/shoenig/extractors.svg)
