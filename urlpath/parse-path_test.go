@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test/must"
 )
 
 func Test_Parse(t *testing.T) {
@@ -22,18 +22,18 @@ func Test_Parse(t *testing.T) {
 			"bar": Int(&bar),
 		})
 
-		require.NoError(t, err)
-		require.Equal(t, "blah", foo)
-		require.Equal(t, 31, bar)
+		must.NoError(t, err)
+		must.EqCmp(t, "blah", foo)
+		must.EqCmp(t, 31, bar)
 		executed = true
 	})
 
 	w := httptest.NewRecorder()
 	request, err := http.NewRequest(http.MethodGet, "/v1/blah/31", nil)
-	require.NoError(t, err)
+	must.NoError(t, err)
 
 	router.ServeHTTP(w, request)
-	require.True(t, executed)
+	must.True(t, executed)
 }
 
 func Test_ParseValues(t *testing.T) {
@@ -53,10 +53,10 @@ func Test_ParseValues(t *testing.T) {
 		"id":  UInt64(&id),
 	})
 
-	require.NoError(t, err)
-	require.Equal(t, "blah", foo)
-	require.Equal(t, 21, bar)
-	require.Equal(t, uint64(42), id)
+	must.NoError(t, err)
+	must.EqCmp(t, "blah", foo)
+	must.EqCmp(t, 21, bar)
+	must.EqCmp(t, 42, id)
 }
 
 func Test_ParseValues_incompatible(t *testing.T) {
@@ -73,7 +73,7 @@ func Test_ParseValues_incompatible(t *testing.T) {
 		"bar": Int(&bar),
 	})
 
-	require.Error(t, err)
+	must.Error(t, err)
 }
 
 func Test_ParseValues_missing(t *testing.T) {
@@ -89,11 +89,11 @@ func Test_ParseValues_missing(t *testing.T) {
 		"bar": Int(&bar),
 	})
 
-	require.Error(t, err)
+	must.Error(t, err)
 }
 
 func Test_Parameter_String(t *testing.T) {
 	p := Parameter("foo")
 	s := p.String()
-	require.Equal(t, "{foo}", s)
+	must.EqCmp(t, "{foo}", s)
 }

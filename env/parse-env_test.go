@@ -3,7 +3,7 @@ package env
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test/must"
 )
 
 func Test_Parse_required(t *testing.T) {
@@ -32,12 +32,12 @@ func Test_Parse_required(t *testing.T) {
 		"B2":  Bool(&b2, true),
 	})
 
-	require.NoError(t, err)
-	require.Equal(t, "foo", foo)
-	require.Equal(t, 12, bar)
-	require.Equal(t, 3.14, baz)
-	require.Equal(t, true, b1)
-	require.Equal(t, true, b2)
+	must.NoError(t, err)
+	must.EqCmp(t, "foo", foo)
+	must.EqCmp(t, 12, bar)
+	must.EqCmp(t, 3.14, baz)
+	must.True(t, b1)
+	must.True(t, b2)
 }
 
 func Test_Parse_optional(t *testing.T) {
@@ -63,11 +63,11 @@ func Test_Parse_optional(t *testing.T) {
 		"B1":  Bool(&b1, false),
 	})
 
-	require.NoError(t, err)
-	require.Equal(t, "", foo)
-	require.Equal(t, 0, bar)
-	require.Equal(t, 0.0, baz)
-	require.False(t, b1)
+	must.NoError(t, err)
+	must.EqCmp(t, "", foo)
+	must.EqCmp(t, 0, bar)
+	must.EqCmp(t, 0.0, baz)
+	must.False(t, b1)
 }
 
 func Test_Parse_required_missing(t *testing.T) {
@@ -84,7 +84,7 @@ func Test_Parse_required_missing(t *testing.T) {
 		err := Parse(env, Schema{
 			"FOO": String(&foo, true),
 		})
-		require.Error(t, err)
+		must.Error(t, err)
 	}
 
 	{
@@ -92,7 +92,7 @@ func Test_Parse_required_missing(t *testing.T) {
 		err := Parse(env, Schema{
 			"BAR": Int(&bar, true),
 		})
-		require.Error(t, err)
+		must.Error(t, err)
 	}
 
 	{
@@ -100,7 +100,7 @@ func Test_Parse_required_missing(t *testing.T) {
 		err := Parse(env, Schema{
 			"BAZ": Float(&baz, true),
 		})
-		require.Error(t, err)
+		must.Error(t, err)
 	}
 
 	{
@@ -108,7 +108,7 @@ func Test_Parse_required_missing(t *testing.T) {
 		err := Parse(env, Schema{
 			"B1": Bool(&b1, true),
 		})
-		require.Error(t, err)
+		must.Error(t, err)
 	}
 }
 
@@ -124,7 +124,7 @@ func Test_Parse_fail(t *testing.T) {
 		err := Parse(env, Schema{
 			"BAR": Int(&bar, true),
 		})
-		require.Error(t, err)
+		must.Error(t, err)
 	}
 
 	{
@@ -132,7 +132,7 @@ func Test_Parse_fail(t *testing.T) {
 		err := Parse(env, Schema{
 			"BAZ": Float(&baz, true),
 		})
-		require.Error(t, err)
+		must.Error(t, err)
 	}
 }
 
@@ -143,6 +143,6 @@ func Test_ParseOS(t *testing.T) {
 		"XTERM": String(&xTerm, false),
 	})
 
-	require.NoError(t, err)
+	must.NoError(t, err)
 	t.Log("xterm value:", xTerm)
 }

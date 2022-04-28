@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test/must"
 )
 
 func Test_Parse_singles(t *testing.T) {
@@ -29,16 +29,16 @@ func Test_Parse_singles(t *testing.T) {
 		"three": Float(&three),
 		"four":  Bool(&four),
 	})
-	require.NoError(t, err)
-	require.Equal(t, "1", one)
-	require.Equal(t, 2, two)
-	require.Equal(t, 3.1, three)
-	require.Equal(t, true, four)
+	must.NoError(t, err)
+	must.EqCmp(t, "1", one)
+	must.EqCmp(t, 2, two)
+	must.EqCmp(t, 3.1, three)
+	must.True(t, four)
 }
 
 func Test_Parse_HTMLForm(t *testing.T) {
 	request, err := http.NewRequest(http.MethodPost, "/", nil)
-	require.NoError(t, err)
+	must.NoError(t, err)
 
 	request.PostForm = make(url.Values)
 	request.PostForm.Set("one", "1")
@@ -59,16 +59,16 @@ func Test_Parse_HTMLForm(t *testing.T) {
 		"three": Float(&three),
 		"four":  Bool(&four),
 	})
-	require.NoError(t, err2)
-	require.Equal(t, "1", one)
-	require.Equal(t, 2, two)
-	require.Equal(t, 3.1, three)
-	require.Equal(t, true, four)
+	must.NoError(t, err2)
+	must.EqCmp(t, "1", one)
+	must.EqCmp(t, 2, two)
+	must.EqCmp(t, 3.1, three)
+	must.True(t, four)
 }
 
 func Test_Parse_HTMLForm_not_ready(t *testing.T) {
 	request, err := http.NewRequest(http.MethodPost, "/", nil)
-	require.NoError(t, err)
+	must.NoError(t, err)
 
 	var one string
 
@@ -76,8 +76,7 @@ func Test_Parse_HTMLForm_not_ready(t *testing.T) {
 	err2 := ParseForm(request, Schema{
 		"one": String(&one),
 	})
-	require.Error(t, err2)
-
+	must.Error(t, err2)
 }
 
 func Test_Parse_key_missing(t *testing.T) {
@@ -89,7 +88,7 @@ func Test_Parse_key_missing(t *testing.T) {
 	err := Parse(data, Schema{
 		"two": Int(&two),
 	})
-	require.Error(t, err)
+	must.Error(t, err)
 }
 
 func Test_Parse_string_value_missing(t *testing.T) {
@@ -101,7 +100,7 @@ func Test_Parse_string_value_missing(t *testing.T) {
 	err := Parse(data, Schema{
 		"one": String(&one),
 	})
-	require.Error(t, err)
+	must.Error(t, err)
 }
 
 func Test_Parse_int_value_missing(t *testing.T) {
@@ -113,7 +112,7 @@ func Test_Parse_int_value_missing(t *testing.T) {
 	err := Parse(data, Schema{
 		"two": Int(&two),
 	})
-	require.Error(t, err)
+	must.Error(t, err)
 }
 
 func Test_Parse_int_malformed(t *testing.T) {
@@ -125,7 +124,7 @@ func Test_Parse_int_malformed(t *testing.T) {
 	err := Parse(data, Schema{
 		"two": Int(&two),
 	})
-	require.Error(t, err)
+	must.Error(t, err)
 }
 
 func Test_Parse_float_value_missing(t *testing.T) {
@@ -137,7 +136,7 @@ func Test_Parse_float_value_missing(t *testing.T) {
 	err := Parse(data, Schema{
 		"three": Float(&three),
 	})
-	require.Error(t, err)
+	must.Error(t, err)
 }
 
 func Test_Parse_float_malformed(t *testing.T) {
@@ -149,7 +148,7 @@ func Test_Parse_float_malformed(t *testing.T) {
 	err := Parse(data, Schema{
 		"three": Float(&three),
 	})
-	require.Error(t, err)
+	must.Error(t, err)
 }
 
 func Test_Parse_bool_value_missing(t *testing.T) {
@@ -161,7 +160,7 @@ func Test_Parse_bool_value_missing(t *testing.T) {
 	err := Parse(data, Schema{
 		"four": Bool(&four),
 	})
-	require.Error(t, err)
+	must.Error(t, err)
 }
 
 func Test_Parse_bool_malformed(t *testing.T) {
@@ -173,5 +172,5 @@ func Test_Parse_bool_malformed(t *testing.T) {
 	err := Parse(data, Schema{
 		"four": Bool(&four),
 	})
-	require.Error(t, err)
+	must.Error(t, err)
 }
