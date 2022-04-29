@@ -23,8 +23,8 @@ func Test_Parse(t *testing.T) {
 		})
 
 		must.NoError(t, err)
-		must.EqCmp(t, "blah", foo)
-		must.EqCmp(t, 31, bar)
+		must.EqOp(t, "blah", foo)
+		must.EqOp(t, 31, bar)
 		executed = true
 	})
 
@@ -54,9 +54,9 @@ func Test_ParseValues(t *testing.T) {
 	})
 
 	must.NoError(t, err)
-	must.EqCmp(t, "blah", foo)
-	must.EqCmp(t, 21, bar)
-	must.EqCmp(t, 42, id)
+	must.EqOp(t, "blah", foo)
+	must.EqOp(t, 21, bar)
+	must.EqOp(t, 42, id)
 }
 
 func Test_ParseValues_incompatible(t *testing.T) {
@@ -95,5 +95,5 @@ func Test_ParseValues_missing(t *testing.T) {
 func Test_Parameter_String(t *testing.T) {
 	p := Parameter("foo")
 	s := p.String()
-	must.EqCmp(t, "{foo}", s)
+	must.EqOp(t, "{foo}", s)
 }

@@ -30,9 +30,9 @@ func Test_Parse_singles(t *testing.T) {
 		"four":  Bool(&four),
 	})
 	must.NoError(t, err)
-	must.EqCmp(t, "1", one)
-	must.EqCmp(t, 2, two)
-	must.EqCmp(t, 3.1, three)
+	must.EqOp(t, "1", one)
+	must.EqOp(t, 2, two)
+	must.EqOp(t, 3.1, three)
 	must.True(t, four)
 }
 
@@ -60,9 +60,9 @@ func Test_Parse_HTMLForm(t *testing.T) {
 		"four":  Bool(&four),
 	})
 	must.NoError(t, err2)
-	must.EqCmp(t, "1", one)
-	must.EqCmp(t, 2, two)
-	must.EqCmp(t, 3.1, three)
+	must.EqOp(t, "1", one)
+	must.EqOp(t, 2, two)
+	must.EqOp(t, 3.1, three)
 	must.True(t, four)
 }
 
