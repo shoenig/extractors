@@ -33,9 +33,9 @@ func Test_Parse_required(t *testing.T) {
 	})
 
 	must.NoError(t, err)
-	must.EqCmp(t, "foo", foo)
-	must.EqCmp(t, 12, bar)
-	must.EqCmp(t, 3.14, baz)
+	must.EqOp(t, "foo", foo)
+	must.EqOp(t, 12, bar)
+	must.EqOp(t, 3.14, baz)
 	must.True(t, b1)
 	must.True(t, b2)
 }
@@ -64,9 +64,9 @@ func Test_Parse_optional(t *testing.T) {
 	})
 
 	must.NoError(t, err)
-	must.EqCmp(t, "", foo)
-	must.EqCmp(t, 0, bar)
-	must.EqCmp(t, 0.0, baz)
+	must.EqOp(t, "", foo)
+	must.EqOp(t, 0, bar)
+	must.EqOp(t, 0.0, baz)
 	must.False(t, b1)
 }
 
