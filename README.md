@@ -3,15 +3,11 @@ extractors
 
 Extract values from text using typed schema
 
-[![Go Report Card](https://goreportcard.com/badge/gophers.dev/pkgs/extractors)](https://goreportcard.com/report/gophers.dev/pkgs/extractors)
-[![run-ci](https://github.com/shoenig/extractors/actions/workflows/ci.yml/badge.svg)](https://github.com/shoenig/extractors/actions/workflows/ci.yml)
-[![GoDoc](https://godoc.org/gophers.dev/pkgs/extractors?status.svg)](https://godoc.org/gophers.dev/pkgs/extractors)
-![NetflixOSS Lifecycle](https://img.shields.io/osslifecycle/shoenig/extractors.svg)
 ![GitHub](https://img.shields.io/github/license/shoenig/extractors.svg)
 
 # Project Overview
 
-Module `gophers.dev/pkgs/extractors` provides packages for extracting values
+Module `github.com/shoenig/extractors` provides packages for extracting values
 from sources of text. By providing a typed schema with named keys, values can
 be parsed from text in a type-safe way.
 
@@ -19,7 +15,7 @@ be parsed from text in a type-safe way.
 
 The `extractors` package can be installed by running
 ```
-$ go get gophers.dev/pkgs/extractors
+$ go get github.com/shoenig/extractors
 ```
 
 #### Example Usage of env
@@ -79,9 +75,9 @@ _ = urlpath.Parse(request, urlpath.Schema{
 
 # Contributing
 
-The `gophers.dev/pkgs/extractors` module is always improving with new features
+The `github.com/shoenig/extractors` module is always improving with new features
 and error corrections. For contributing bug fixes and new features please file an issue.
 
 # License
 
-The `gophers.dev/pkgs/extractors` module is open source under the [BSD-3-Clause](LICENSE) license.
+The `github.com/shoenig/extractors` module is open source under the [BSD-3-Clause](LICENSE) license.
