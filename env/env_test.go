@@ -42,6 +42,49 @@ func Test_Parse_required(t *testing.T) {
 	must.Eq(t, "hunter2", pass.Unveil())
 }
 
+func Test_ParseOr(t *testing.T) {
+	t.Setenv("FOO", "foo")
+	t.Setenv("BAR", "")
+	t.Setenv("I1", "42")
+	t.Setenv("I2", "")
+	t.Setenv("F1", "1.1")
+	t.Setenv("F2", "")
+	t.Setenv("B1", "true")
+	t.Setenv("B2", "")
+
+	var (
+		foo string
+		bar string
+		i1  int
+		i2  int
+		f1  float64
+		f2  float64
+		b1  bool
+		b2  bool
+	)
+
+	err := Parse(OS, Schema{
+		"FOO": StringOr(&foo, "baz"),
+		"BAR": StringOr(&bar, "baz"),
+		"I1":  IntOr(&i1, 77),
+		"I2":  IntOr(&i2, 77),
+		"F1":  FloatOr(&f1, 50.5),
+		"F2":  FloatOr(&f2, 50.5),
+		"B1":  BoolOr(&b1, false),
+		"B2":  BoolOr(&b2, true),
+	})
+
+	must.NoError(t, err)
+	must.Eq(t, "foo", foo)
+	must.Eq(t, "baz", bar)
+	must.Eq(t, 42, i1)
+	must.Eq(t, 77, i2)
+	must.Eq(t, f1, 1.1)
+	must.Eq(t, f2, 50.5)
+	must.True(t, b1)
+	must.True(t, b2)
+}
+
 func Test_Parse_optional(t *testing.T) {
 	t.Setenv("FOO", "")
 	t.Setenv("BAR", "")
