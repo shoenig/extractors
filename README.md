@@ -1,47 +1,59 @@
 extractors
 ==========
 
-Extract values from text using typed schema
+The `extractors` module provides libraries for defining a schema to easily and safely extract values from environment variables,
+URL path elements, and HTML form values.
 
 ![GitHub](https://img.shields.io/github/license/shoenig/extractors.svg)
 [![Run CI Tests](https://github.com/shoenig/extractors/actions/workflows/ci.yml/badge.svg)](https://github.com/shoenig/extractors/actions/workflows/ci.yml)
 
-# Project Overview
-
-Module `github.com/shoenig/extractors` provides packages for extracting values
-from sources of text. By providing a typed schema with named keys, values can
-be parsed from text in a type-safe way.
 
 # Getting Started
 
 The `extractors` package can be installed by running
-```
-$ go get github.com/shoenig/extractors
+
+```shell-session
+go get github.com/shoenig/extractors@latest
 ```
 
-#### Example Usage of env
+```go
+import github.com/shoenig/extractors/env      // extract values from environment variables
+import github.com/shoenig/extractors/urlpath  // extract elements from url paths
+import github.com/shoenig/extractors/formdata // extract values from html data
+```
+
+#### env example
+
 Use the `env` package to parse values from environment variables.
-```golang
+
+```go
+import github.com/shoenig/go-conceal // for storing sensitive values
+```
+
+```go
 var (
     go111module string
     sshPID      int
+    password    *conceal.Text
 )
 
 _ = env.ParseOS(env.Schema{
     "GO111MODULE":   env.String(&go111module, false),
     "SSH_AGENT_PID": env.Int(&sshPID, true),
+    "PASSWORD":      env.Secret(&password, true),
 })
-
 ```
 
-#### Example usage of formdata
+#### formdata example
+
 Use the `formdata` package to parse values from `url.Values` (typically coming
 from ``*http.Request.Form` objects from inbound requests.
-```golang
+
+```go
 // typically coming from a *http.Request.Form
 values := url.Values{
-    "user": []string{"bob"},
-    "age":  []string{"45"},
+    "user":     []string{"bob"},
+    "age":      []string{"45"},
 }
 
 var (
@@ -55,10 +67,12 @@ _ = formdata.Parse(values, formdata.Schema{
 })
 ```
 
-#### Example usage of urlpath
+#### urlpath example
+
 Use the `urlpath` package to parse URL path elements when using a `gorilla/mux`
 router.
-```golang
+
+```go
 // with a mux handler definition like
 router.Handle("/{kind}/{id}")
 
