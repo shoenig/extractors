@@ -142,8 +142,10 @@ func Bool(b *bool, required bool) Parser {
 	}
 }
 
-//go:generate go run github.com/gojuno/minimock/v3/cmd/minimock -g -i Environment -s _mock.go
-
+// Environment is something that implements Getenv().
+//
+// Most use cases can simply make use of the OS implementation which is backed
+// by the standard library os package.
 type Environment interface {
 	Getenv(string) string
 }
@@ -156,4 +158,6 @@ func (e *osEnv) Getenv(name string) string {
 	return os.Getenv(name)
 }
 
+// OS is an implementation of Environment that uses the standard library os
+// package to retrieve actual environment variables.
 var OS Environment = &osEnv{}

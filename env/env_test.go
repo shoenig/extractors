@@ -7,14 +7,11 @@ import (
 )
 
 func Test_Parse_required(t *testing.T) {
-	env := NewEnvironmentMock(t)
-	defer env.MinimockFinish()
-
-	env.GetenvMock.When("FOO").Then("foo")
-	env.GetenvMock.When("BAR").Then("12")
-	env.GetenvMock.When("BAZ").Then("3.14")
-	env.GetenvMock.When("B1").Then("true")
-	env.GetenvMock.When("B2").Then("1")
+	t.Setenv("FOO", "foo")
+	t.Setenv("BAR", "12")
+	t.Setenv("BAZ", "3.14")
+	t.Setenv("B1", "true")
+	t.Setenv("B2", "1")
 
 	var (
 		foo string
@@ -24,7 +21,7 @@ func Test_Parse_required(t *testing.T) {
 		b2  bool
 	)
 
-	err := Parse(env, Schema{
+	err := Parse(OS, Schema{
 		"FOO": String(&foo, true),
 		"BAR": Int(&bar, true),
 		"BAZ": Float(&baz, true),
@@ -33,21 +30,18 @@ func Test_Parse_required(t *testing.T) {
 	})
 
 	must.NoError(t, err)
-	must.EqOp(t, "foo", foo)
-	must.EqOp(t, 12, bar)
-	must.EqOp(t, 3.14, baz)
+	must.Eq(t, "foo", foo)
+	must.Eq(t, 12, bar)
+	must.Eq(t, 3.14, baz)
 	must.True(t, b1)
 	must.True(t, b2)
 }
 
 func Test_Parse_optional(t *testing.T) {
-	env := NewEnvironmentMock(t)
-	defer env.MinimockFinish()
-
-	env.GetenvMock.When("FOO").Then("")
-	env.GetenvMock.When("BAR").Then("")
-	env.GetenvMock.When("BAZ").Then("")
-	env.GetenvMock.When("B1").Then("")
+	t.Setenv("FOO", "")
+	t.Setenv("BAR", "")
+	t.Setenv("BAZ", "")
+	t.Setenv("B1", "")
 
 	var (
 		foo string
@@ -56,7 +50,7 @@ func Test_Parse_optional(t *testing.T) {
 		b1  bool
 	)
 
-	err := Parse(env, Schema{
+	err := Parse(OS, Schema{
 		"FOO": String(&foo, false),
 		"BAR": Int(&bar, false),
 		"BAZ": Float(&baz, false),
@@ -64,24 +58,20 @@ func Test_Parse_optional(t *testing.T) {
 	})
 
 	must.NoError(t, err)
-	must.EqOp(t, "", foo)
-	must.EqOp(t, 0, bar)
-	must.EqOp(t, 0.0, baz)
+	must.Eq(t, "", foo)
+	must.Eq(t, 0, bar)
+	must.Eq(t, 0.0, baz)
 	must.False(t, b1)
 }
 
 func Test_Parse_required_missing(t *testing.T) {
-	env := NewEnvironmentMock(t)
-	defer env.MinimockFinish()
-
-	env.GetenvMock.When("FOO").Then("")
-	env.GetenvMock.When("BAR").Then("")
-	env.GetenvMock.When("BAZ").Then("")
-	env.GetenvMock.When("B1").Then("")
-
+	t.Setenv("FOO", "")
+	t.Setenv("BAR", "")
+	t.Setenv("BAZ", "")
+	t.Setenv("B1", "")
 	{
 		var foo string
-		err := Parse(env, Schema{
+		err := Parse(OS, Schema{
 			"FOO": String(&foo, true),
 		})
 		must.Error(t, err)
@@ -89,7 +79,7 @@ func Test_Parse_required_missing(t *testing.T) {
 
 	{
 		var bar int
-		err := Parse(env, Schema{
+		err := Parse(OS, Schema{
 			"BAR": Int(&bar, true),
 		})
 		must.Error(t, err)
@@ -97,7 +87,7 @@ func Test_Parse_required_missing(t *testing.T) {
 
 	{
 		var baz float64
-		err := Parse(env, Schema{
+		err := Parse(OS, Schema{
 			"BAZ": Float(&baz, true),
 		})
 		must.Error(t, err)
@@ -105,7 +95,7 @@ func Test_Parse_required_missing(t *testing.T) {
 
 	{
 		var b1 bool
-		err := Parse(env, Schema{
+		err := Parse(OS, Schema{
 			"B1": Bool(&b1, true),
 		})
 		must.Error(t, err)
@@ -113,15 +103,12 @@ func Test_Parse_required_missing(t *testing.T) {
 }
 
 func Test_Parse_fail(t *testing.T) {
-	env := NewEnvironmentMock(t)
-	defer env.MinimockFinish()
-
-	env.GetenvMock.When("BAR").Then("abc")
-	env.GetenvMock.When("BAZ").Then("abc")
+	t.Setenv("BAR", "abc")
+	t.Setenv("BAZ", "abc")
 
 	{
 		var bar int
-		err := Parse(env, Schema{
+		err := Parse(OS, Schema{
 			"BAR": Int(&bar, true),
 		})
 		must.Error(t, err)
@@ -129,7 +116,7 @@ func Test_Parse_fail(t *testing.T) {
 
 	{
 		var baz float64
-		err := Parse(env, Schema{
+		err := Parse(OS, Schema{
 			"BAZ": Float(&baz, true),
 		})
 		must.Error(t, err)
