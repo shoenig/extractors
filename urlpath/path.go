@@ -1,12 +1,11 @@
 package urlpath
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
-
-	"github.com/pkg/errors"
 )
 
 // Typical usage:
@@ -58,11 +57,11 @@ func ParseValues(values map[string]string, schema Schema) error {
 	for name, parser := range schema {
 		value, exists := values[name.Name()]
 		if !exists {
-			return errors.Errorf("url path element not present: %q", name)
+			return fmt.Errorf("url path element not present: %q", name)
 		}
 
 		if err := parser.Parse(value); err != nil {
-			return errors.Wrap(err, "could not parse url path variable")
+			return fmt.Errorf("could not parse url path variable: %w", err)
 		}
 	}
 	return nil

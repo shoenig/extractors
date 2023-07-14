@@ -1,11 +1,11 @@
 package formdata
 
 import (
+	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
-
-	"github.com/pkg/errors"
 )
 
 var (
@@ -22,7 +22,7 @@ func Parse(data url.Values, schema Schema) error {
 		}
 
 		if err := parser.Parse(values); err != nil {
-			return errors.Wrap(err, ErrParseFailure.Error())
+			return fmt.Errorf("%s: %w", ErrParseFailure.Error(), err)
 		}
 	}
 	return nil

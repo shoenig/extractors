@@ -1,10 +1,10 @@
 package env
 
 import (
+	"errors"
+	"fmt"
 	"os"
 	"strconv"
-
-	"github.com/pkg/errors"
 )
 
 // A Variable represents a set environment variable
@@ -28,7 +28,7 @@ func Parse(environment Environment, schema Schema) error {
 	for key, parser := range schema {
 		value := environment.Getenv(key.Name())
 		if err := parser.Parse(value); err != nil {
-			return errors.Wrapf(err, "failed to parse %q", key)
+			return fmt.Errorf("failed to parse %q: %w", key, err)
 		}
 	}
 	return nil
@@ -75,7 +75,7 @@ func (ip *intParser) Parse(s string) error {
 
 	i, err := strconv.Atoi(s)
 	if err != nil {
-		return errors.Wrapf(err, "unable to parse %q as int", s)
+		return fmt.Errorf("unable to parse %q as int: %w", s, err)
 	}
 	*ip.destination = i
 	return nil
@@ -102,7 +102,7 @@ func (fp *floatParser) Parse(s string) error {
 
 	f, err := strconv.ParseFloat(s, 64)
 	if err != nil {
-		return errors.Wrapf(err, "unable to parse %q as float", s)
+		return fmt.Errorf("unable to parse %q as float: %w", s, err)
 	}
 	*fp.destination = f
 	return nil
@@ -129,7 +129,7 @@ func (bp *boolParser) Parse(s string) error {
 
 	b, err := strconv.ParseBool(s)
 	if err != nil {
-		return errors.Wrapf(err, "unable to parse %q as bool", s)
+		return fmt.Errorf("unable to parse %q as bool: %w", s, err)
 	}
 	*bp.destination = b
 	return nil
