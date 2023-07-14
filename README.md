@@ -4,6 +4,7 @@ extractors
 Extract values from text using typed schema
 
 ![GitHub](https://img.shields.io/github/license/shoenig/extractors.svg)
+[![Run CI Tests](https://github.com/shoenig/extractors/actions/workflows/ci.yml/badge.svg)](https://github.com/shoenig/extractors/actions/workflows/ci.yml)
 
 # Project Overview
 
