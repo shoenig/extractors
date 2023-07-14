@@ -9,7 +9,7 @@ import (
 	"github.com/shoenig/go-conceal"
 )
 
-// A Variable represents a set environment variable
+// A Variable represents an environment variable.
 type Variable string
 
 func (v Variable) String() string {
@@ -20,12 +20,20 @@ func (v Variable) Name() string {
 	return string(v)
 }
 
+// Schema is used to describe how to parse a set of environment variables.
 type Schema map[Variable]Parser
 
+// ParseOS is a convenience function for parsing the given Schema of environment
+// variables using the environment variables accessed by the standard libraray
+// os package. If the values of environment variables do not match the schema,
+// or required variables are missing, an error is returned.
 func ParseOS(schema Schema) error {
 	return Parse(OS, schema)
 }
 
+// Parse uses the given Schema to parse the environment variables in the given
+// Environment. If the values of environment variables in Environment do not
+// match the schema, or required variables are missing, an error is returned.
 func Parse(environment Environment, schema Schema) error {
 	for key, parser := range schema {
 		value := environment.Getenv(key.Name())
@@ -36,6 +44,8 @@ func Parse(environment Environment, schema Schema) error {
 	return nil
 }
 
+// The Parser interface is what must be implemented to support decoding an
+// environment variable into a custom type.
 type Parser interface {
 	Parse(string) error
 }
@@ -56,9 +66,23 @@ func (sp *stringParser) Parse(s string) error {
 	return nil
 }
 
+// String is used to extract an environment variable into a Go string. If
+// required is true, then an error is returned if the environment variable is
+// not set or is empty.
 func String(s *string, required bool) Parser {
 	return &stringParser{
 		required:    required,
+		destination: s,
+	}
+}
+
+// StringOr is used to extract an environment variable into a Go string. If
+// the environment variable is not set or is empty, then the alt value is used
+// instead.
+func StringOr(s *string, alt string) Parser {
+	*s = alt
+	return &stringParser{
+		required:    false,
 		destination: s,
 	}
 }
@@ -80,6 +104,9 @@ func (sp *secretParser) Parse(s string) error {
 	return nil
 }
 
+// Secret is used to extract an environment variable into a Go concel.Text
+// object. If required is true, then an error is returned if the environment
+// variable is not set or is empty.
 func Secret(s **conceal.Text, required bool) Parser {
 	return &secretParser{
 		required:    required,
@@ -107,9 +134,23 @@ func (ip *intParser) Parse(s string) error {
 	return nil
 }
 
+// Int is used to extract an environment variable into a Go int. If required
+// is true, then an error is returned if the environment variable is not set or
+// is empty.
 func Int(i *int, required bool) Parser {
 	return &intParser{
 		required:    required,
+		destination: i,
+	}
+}
+
+// IntOr is used to extract an environment variable into a Go int. If the
+// environment variable is not set or is empty, then the alt value is used
+// instead.
+func IntOr(i *int, alt int) Parser {
+	*i = alt
+	return &intParser{
+		required:    false,
 		destination: i,
 	}
 }
@@ -134,9 +175,23 @@ func (fp *floatParser) Parse(s string) error {
 	return nil
 }
 
+// Float is used to extract an environment variable into a Go float64. If
+// required is true, then an error is returned if the environment variable is
+// not set or is empty.
 func Float(f *float64, required bool) Parser {
 	return &floatParser{
 		required:    required,
+		destination: f,
+	}
+}
+
+// FloatOr is used to extract an environment variable into a Go float64. If
+// the environment variable is not set or is emty, then the alt value is used
+// instead.
+func FloatOr(f *float64, alt float64) Parser {
+	*f = alt
+	return &floatParser{
+		required:    false,
 		destination: f,
 	}
 }
@@ -161,9 +216,23 @@ func (bp *boolParser) Parse(s string) error {
 	return nil
 }
 
+// Bool is used to extract an environment variable into a Go bool. If required
+// is true, then an error is returned if the environment variable is not set or
+// is empty.
 func Bool(b *bool, required bool) Parser {
 	return &boolParser{
 		required:    required,
+		destination: b,
+	}
+}
+
+// BoolOr is used to extract an environment variable into a Go bool. If the
+// environment variable is not set or is empty, then the alt value is used
+// instead.
+func BoolOr(b *bool, alt bool) Parser {
+	*b = alt
+	return &boolParser{
+		required:    false,
 		destination: b,
 	}
 }
