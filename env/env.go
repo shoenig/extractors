@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+
+	"github.com/shoenig/go-conceal"
 )
 
 // A Variable represents a set environment variable
@@ -56,6 +58,30 @@ func (sp *stringParser) Parse(s string) error {
 
 func String(s *string, required bool) Parser {
 	return &stringParser{
+		required:    required,
+		destination: s,
+	}
+}
+
+type secretParser struct {
+	required    bool
+	destination **conceal.Text
+}
+
+func (sp *secretParser) Parse(s string) error {
+	if sp.required && s == "" {
+		return errors.New("missing")
+	} else if s == "" {
+		return nil
+	}
+
+	text := conceal.New(s)
+	*sp.destination = text
+	return nil
+}
+
+func Secret(s **conceal.Text, required bool) Parser {
+	return &secretParser{
 		required:    required,
 		destination: s,
 	}
