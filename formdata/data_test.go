@@ -30,10 +30,51 @@ func Test_Parse_singles(t *testing.T) {
 		"four":  Bool(&four),
 	})
 	must.NoError(t, err)
-	must.EqOp(t, "1", one)
-	must.EqOp(t, 2, two)
-	must.EqOp(t, 3.1, three)
+	must.Eq(t, "1", one)
+	must.Eq(t, 2, two)
+	must.Eq(t, 3.1, three)
 	must.True(t, four)
+}
+
+func Test_Parse_singles_Or(t *testing.T) {
+	data := url.Values{
+		"string1": []string{"hi"},
+		"string2": nil,
+		"int1":    []string{"1"},
+		"int2":    nil,
+		"float1":  []string{"2.2"},
+		"float2":  nil,
+		"bool1":   []string{"true"},
+		"bool2":   nil,
+	}
+
+	var (
+		s1, s2 string
+		i1, i2 int
+		f1, f2 float64
+		b1, b2 bool
+	)
+
+	err := Parse(data, Schema{
+		"string1": StringOr(&s1, "X"),
+		"string2": StringOr(&s2, "X"),
+		"int1":    IntOr(&i1, 3),
+		"int2":    IntOr(&i2, 4),
+		"float1":  FloatOr(&f1, 5.5),
+		"float2":  FloatOr(&f2, 6.6),
+		"bool1":   BoolOr(&b1, false),
+		"bool2":   BoolOr(&b2, true),
+	})
+
+	must.NoError(t, err)
+	must.Eq(t, "hi", s1)
+	must.Eq(t, "X", s2)
+	must.Eq(t, 1, i1)
+	must.Eq(t, 4, i2)
+	must.Eq(t, 2.2, f1)
+	must.Eq(t, 6.6, f2)
+	must.Eq(t, true, b1)
+	must.Eq(t, true, b2)
 }
 
 func Test_Parse_HTMLForm(t *testing.T) {
@@ -60,9 +101,9 @@ func Test_Parse_HTMLForm(t *testing.T) {
 		"four":  Bool(&four),
 	})
 	must.NoError(t, err2)
-	must.EqOp(t, "1", one)
-	must.EqOp(t, 2, two)
-	must.EqOp(t, 3.1, three)
+	must.Eq(t, "1", one)
+	must.Eq(t, 2, two)
+	must.Eq(t, 3.1, three)
 	must.True(t, four)
 }
 

@@ -1,3 +1,5 @@
+// Package formdata provides a way to safely and conveniently extract html Form
+// data using a definied schema.
 package formdata
 
 import (
@@ -9,7 +11,8 @@ import (
 )
 
 var (
-	ErrNonSingleValue  = errors.New("expected single value")
+	ErrNoValue         = errors.New("expected value to exist")
+	ErrMulitpleValues  = errors.New("expected only one value to exist")
 	ErrFieldNotPresent = errors.New("requested field does not exist")
 	ErrParseFailure    = errors.New("could not parse value")
 )
@@ -44,38 +47,82 @@ type Schema map[string]Parser
 // do we care about multi-value? we could provide parsers into slices
 // automatically, for example
 
+// A Parser implementation is capable of extracting a value from the value of
+// an url.Values, which is a slice of string.
 type Parser interface {
 	Parse([]string) error
 }
 
+// String is used to extract a form data value into a Go string. If the value
+// is not a string or is missing then an error is returned during parsing.
+func String(s *string) Parser {
+	return &stringParser{
+		required:    true,
+		destination: s,
+	}
+}
+
+// StringOr is used to extract a form data value into a Go string. If the value
+// is missing, then the alt value is used instead.
+func StringOr(s *string, alt string) Parser {
+	*s = alt
+	return &stringParser{
+		required:    false,
+		destination: s,
+	}
+}
+
 type stringParser struct {
+	required    bool
 	destination *string
 }
 
-func String(s *string) Parser {
-	return &stringParser{destination: s}
-}
-
 func (p *stringParser) Parse(values []string) error {
-	if len(values) != 1 {
-		return ErrNonSingleValue
+	switch {
+	case len(values) > 1:
+		return ErrMulitpleValues
+	case len(values) == 0 && p.required:
+		return ErrNoValue
+	case len(values) == 0:
+		return nil
+	default:
+		*p.destination = values[0]
 	}
-
-	*p.destination = values[0]
 	return nil
 }
 
 type intParser struct {
+	required    bool
 	destination *int
 }
 
+// Int is used to extract a form data value into a Go int. If the value is not
+// an int or is missing then an error is returned during parsing.
 func Int(i *int) Parser {
-	return &intParser{destination: i}
+	return &intParser{
+		required:    true,
+		destination: i,
+	}
+}
+
+// IntOr is used to extract a form data value into a Go int. If the value is
+// missing, then the alt value is used instead.
+func IntOr(i *int, alt int) Parser {
+	*i = alt
+	return &intParser{
+		required:    false,
+		destination: i,
+	}
 }
 
 func (p *intParser) Parse(values []string) error {
-	if len(values) != 1 {
-		return ErrNonSingleValue
+	switch {
+	case len(values) > 1:
+		return ErrMulitpleValues
+	case len(values) == 0 && p.required:
+		return ErrNoValue
+	case len(values) == 0:
+		return nil
 	}
 
 	i, err := strconv.Atoi(values[0])
@@ -88,16 +135,37 @@ func (p *intParser) Parse(values []string) error {
 }
 
 type floatParser struct {
+	required    bool
 	destination *float64
 }
 
+// Float is used to extract a form data value into a Go float64. If the value is
+// not a float or is missing then an error is returned during parsing.
 func Float(f *float64) Parser {
-	return &floatParser{destination: f}
+	return &floatParser{
+		required:    true,
+		destination: f,
+	}
+}
+
+// FloatOr is used to extract a form data value into a Go float64. If the value
+// is missing, then the alt value is used instead.
+func FloatOr(f *float64, alt float64) Parser {
+	*f = alt
+	return &floatParser{
+		required:    false,
+		destination: f,
+	}
 }
 
 func (p *floatParser) Parse(values []string) error {
-	if len(values) != 1 {
-		return ErrNonSingleValue
+	switch {
+	case len(values) > 1:
+		return ErrMulitpleValues
+	case len(values) == 0 && p.required:
+		return ErrNoValue
+	case len(values) == 0:
+		return nil
 	}
 
 	f, err := strconv.ParseFloat(values[0], 64)
@@ -110,16 +178,37 @@ func (p *floatParser) Parse(values []string) error {
 }
 
 type boolParser struct {
+	required    bool
 	destination *bool
 }
 
+// Bool is used to extract a form data value into a Go bool. If the value is not
+// a bool or is missing than an error is returned during parsing.
 func Bool(b *bool) Parser {
-	return &boolParser{destination: b}
+	return &boolParser{
+		required:    true,
+		destination: b,
+	}
+}
+
+// BoolOr is used to extract a form data value into a Go bool. If the value is
+// missing, then the alt value is used instead.
+func BoolOr(b *bool, alt bool) Parser {
+	*b = alt
+	return &boolParser{
+		required:    false,
+		destination: b,
+	}
 }
 
 func (p *boolParser) Parse(values []string) error {
-	if len(values) != 1 {
-		return ErrNonSingleValue
+	switch {
+	case len(values) > 1:
+		return ErrMulitpleValues
+	case len(values) == 0 && p.required:
+		return ErrNoValue
+	case len(values) == 0:
+		return nil
 	}
 
 	b, err := strconv.ParseBool(values[0])
@@ -130,5 +219,3 @@ func (p *boolParser) Parse(values []string) error {
 	*p.destination = b
 	return nil
 }
-
-// todo: slice variants?
