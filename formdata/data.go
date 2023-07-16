@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+
+	"github.com/shoenig/go-conceal"
 )
 
 var (
@@ -87,6 +89,35 @@ func (p *stringParser) Parse(values []string) error {
 		return nil
 	default:
 		*p.destination = values[0]
+	}
+	return nil
+}
+
+// Secret is used to extract a form data value into a Go conceal.Text. If the
+// value is missing then an error is returned during parsing.
+func Secret(s **conceal.Text) Parser {
+	return &secretParser{
+		required:    true,
+		destination: s,
+	}
+}
+
+type secretParser struct {
+	required    bool
+	destination **conceal.Text
+}
+
+func (p *secretParser) Parse(values []string) error {
+	switch {
+	case len(values) > 1:
+		return ErrMulitpleValues
+	case len(values) == 0 && p.required:
+		return ErrNoValue
+	case len(values) == 0:
+		return nil
+	default:
+		text := conceal.New(values[0])
+		*p.destination = text
 	}
 	return nil
 }

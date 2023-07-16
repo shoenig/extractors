@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/shoenig/go-conceal"
 	"github.com/shoenig/test/must"
 )
 
@@ -14,6 +15,7 @@ func Test_Parse_singles(t *testing.T) {
 		"two":   []string{"2"},
 		"three": []string{"3.1"},
 		"four":  []string{"true"},
+		"five":  []string{"xyz"},
 	}
 
 	var (
@@ -21,6 +23,7 @@ func Test_Parse_singles(t *testing.T) {
 		two   int
 		three float64
 		four  bool
+		five  *conceal.Text
 	)
 
 	err := Parse(data, Schema{
@@ -28,12 +31,14 @@ func Test_Parse_singles(t *testing.T) {
 		"two":   Int(&two),
 		"three": Float(&three),
 		"four":  Bool(&four),
+		"five":  Secret(&five),
 	})
 	must.NoError(t, err)
 	must.Eq(t, "1", one)
 	must.Eq(t, 2, two)
 	must.Eq(t, 3.1, three)
 	must.True(t, four)
+	must.Eq(t, "xyz", five.Unveil())
 }
 
 func Test_Parse_singles_Or(t *testing.T) {
