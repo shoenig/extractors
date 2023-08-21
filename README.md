@@ -17,9 +17,11 @@ go get github.com/shoenig/extractors@latest
 ```
 
 ```go
-import github.com/shoenig/extractors/env      // extract values from environment variables
-import github.com/shoenig/extractors/urlpath  // extract elements from url paths
-import github.com/shoenig/extractors/formdata // extract values from html data
+import (
+    github.com/shoenig/extractors/env      // extract values from environment variables
+    github.com/shoenig/extractors/urlpath  // extract elements from url paths
+    github.com/shoenig/extractors/formdata // extract values from html data
+)
 ```
 
 #### env example
