@@ -5,7 +5,7 @@ The `extractors` module provides libraries for defining a schema to easily and s
 URL path elements, and HTML form values.
 
 ![GitHub](https://img.shields.io/github/license/shoenig/extractors.svg)
-[![Run CI Tests](https://github.com/shoenig/extractors/actions/workflows/ci.yml/badge.svg)](https://github.com/shoenig/extractors/actions/workflows/ci.yml)
+[![Run CI Tests](https://github.com/shoenig/extractors/actions/workflows/ci.yaml/badge.svg)](https://github.com/shoenig/extractors/actions/workflows/ci.yaml)
 
 
 # Getting Started
