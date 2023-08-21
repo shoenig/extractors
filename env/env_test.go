@@ -1,6 +1,9 @@
 package env
 
 import (
+	"io"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/shoenig/go-conceal"
@@ -193,4 +196,33 @@ func Test_ParseOS(t *testing.T) {
 
 	must.NoError(t, err)
 	t.Log("xterm value:", xTerm)
+}
+
+func Test_File(t *testing.T) {
+	temp := filepath.Join(t.TempDir(), "test.env")
+	file, err := os.OpenFile(temp, os.O_CREATE|os.O_WRONLY, 0644)
+	must.NoError(t, err)
+
+	text := `
+ONE=1
+TWO=two
+THREE=three
+`
+
+	_, err = io.WriteString(file, text)
+	must.NoError(t, err)
+
+	f := File(temp)
+
+	one := f.Getenv("ONE")
+	must.Eq(t, "1", one)
+
+	two := f.Getenv("TWO")
+	must.Eq(t, "two", two)
+
+	three := f.Getenv("THREE")
+	must.Eq(t, "three", three)
+
+	missing := f.Getenv("FOUR")
+	must.Eq(t, "", missing)
 }

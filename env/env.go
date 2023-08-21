@@ -1,10 +1,12 @@
 package env
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/shoenig/go-conceal"
 )
@@ -255,4 +257,38 @@ func (e *osEnv) Getenv(name string) string {
 
 // OS is an implementation of Environment that uses the standard library os
 // package to retrieve actual environment variables.
-var OS Environment = &osEnv{}
+var OS Environment = new(osEnv)
+
+// File is an implementation of Environment that reads environment variables
+// from a file.
+//
+// e.g. /etc/os-release
+func File(filename string) Environment {
+	return &fileEnv{filename: filename}
+}
+
+type fileEnv struct {
+	filename string
+}
+
+func (e *fileEnv) Getenv(key string) string {
+	f, err := os.Open(e.filename)
+	if err != nil {
+		return ""
+	}
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+
+		idx := strings.Index(line, "=")
+		if idx < 1 || idx >= len(line)-1 {
+			continue
+		}
+		if line[0:idx] == key {
+			return line[idx+1:]
+		}
+	}
+
+	return ""
+}
