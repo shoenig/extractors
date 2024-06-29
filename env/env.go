@@ -33,6 +33,15 @@ func ParseOS(schema Schema) error {
 	return Parse(OS, schema)
 }
 
+// ParseFile is a convenience function for parsing the given Schema of environment
+// variables using the given .env file path. The contents of the file are read
+// and interpreted as key=value pairs, one per line. If the environment variable
+// contents of the file do not match the schema, or required variables are missing,
+// an error is returned.
+func ParseFile(path string, schema Schema) error {
+	return Parse(File(path), schema)
+}
+
 // Parse uses the given Schema to parse the environment variables in the given
 // Environment. If the values of environment variables in Environment do not
 // match the schema, or required variables are missing, an error is returned.

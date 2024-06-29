@@ -226,3 +226,35 @@ THREE=three
 	missing := f.Getenv("FOUR")
 	must.Eq(t, "", missing)
 }
+
+func Test_ParseFile(t *testing.T) {
+	temp := filepath.Join(t.TempDir(), "test.env")
+	file, err := os.OpenFile(temp, os.O_CREATE|os.O_WRONLY, 0644)
+	must.NoError(t, err)
+
+	text := `
+ONE=1
+TWO=two
+THREE=three
+`
+
+	_, err = io.WriteString(file, text)
+	must.NoError(t, err)
+
+	var (
+		one   int
+		two   string
+		three string
+	)
+
+	err = ParseFile(temp, Schema{
+		"ONE":   Int(&one, true),
+		"TWO":   String(&two, true),
+		"THREE": String(&three, true),
+	})
+
+	must.NoError(t, err)
+	must.Eq(t, 1, one)
+	must.Eq(t, "two", two)
+	must.Eq(t, "three", three)
+}
