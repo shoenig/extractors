@@ -1,3 +1,6 @@
+// Copyright (c) Seth Hoenig
+// SPDX-License-Identifier: BSD-3-Clause
+
 package urlpath
 
 import (
