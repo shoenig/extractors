@@ -1,3 +1,6 @@
+// Copyright (c) Seth Hoenig
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Package formdata provides a way to safely and conveniently extract html Form
 // data using a definied schema.
 package formdata
