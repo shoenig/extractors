@@ -258,3 +258,46 @@ THREE=three
 	must.Eq(t, "two", two)
 	must.Eq(t, "three", three)
 }
+
+func Test_Map(t *testing.T) {
+	m := Map(map[string]string{
+		"ONE":   "1",
+		"TWO":   "two",
+		"THREE": "three",
+	})
+
+	one := m.Getenv("ONE")
+	must.Eq(t, "1", one)
+
+	two := m.Getenv("TWO")
+	must.Eq(t, "two", two)
+
+	three := m.Getenv("THREE")
+	must.Eq(t, "three", three)
+
+	missing := m.Getenv("FOUR")
+	must.Eq(t, "", missing)
+}
+
+func Test_ParseMap(t *testing.T) {
+	var (
+		one   int
+		two   string
+		three string
+	)
+
+	err := ParseMap(map[string]string{
+		"ONE":   "1",
+		"TWO":   "two",
+		"THREE": "three",
+	}, Schema{
+		"ONE":   Int(&one, true),
+		"TWO":   String(&two, true),
+		"THREE": String(&three, true),
+	})
+
+	must.NoError(t, err)
+	must.Eq(t, 1, one)
+	must.Eq(t, "two", two)
+	must.Eq(t, "three", three)
+}
