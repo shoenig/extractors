@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"maps"
 	"os"
 	"strconv"
 	"strings"
@@ -40,6 +41,14 @@ func ParseOS(schema Schema) error {
 // an error is returned.
 func ParseFile(path string, schema Schema) error {
 	return Parse(File(path), schema)
+}
+
+// ParseMap is a convenience function for parsing the given Schema of environment
+// variables using the given map. The contents of the map are inferred as
+// key=value pairs. If the contents of the map do not match the schema, or
+// required variables are missing, an error is returned.
+func ParseMap(m map[string]string, schema Schema) error {
+	return Parse(Map(m), schema)
 }
 
 // Parse uses the given Schema to parse the environment variables in the given
@@ -300,4 +309,24 @@ func (e *fileEnv) Getenv(key string) string {
 	}
 
 	return ""
+}
+
+// Map is an implementation of Environment that uses a given map[string]string
+// to emulate a set of environment variables. Useful for testing.
+//
+//	m := Map(map[string]string {...})
+//
+//	func f(e env.Environment) {
+//	  e.Getenv("FOOBAR")
+//	}
+func Map(m map[string]string) Environment {
+	return &mapEnv{m: maps.Clone(m)}
+}
+
+type mapEnv struct {
+	m map[string]string
+}
+
+func (m *mapEnv) Getenv(key string) string {
+	return m.m[key]
 }
