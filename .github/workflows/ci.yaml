@@ -7,6 +7,20 @@ on:
     branches:
       - 'main'
 jobs:
+  run-lint:
+    timeout-minutes: 5
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          cache: false
+          go-version-file: go.mod
+      - uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.60.1
+          skip-cache: true
+          args: --config .github/workflows/scripts/golangci.yaml
   run-tests:
     runs-on: ubuntu-24.04
     steps:
