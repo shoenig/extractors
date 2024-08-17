@@ -1,6 +1,7 @@
 package urlpath
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -13,7 +14,7 @@ func Test_Parse(t *testing.T) {
 	router := mux.NewRouter()
 	executed := false
 
-	router.HandleFunc("/v1/{foo}/{bar}", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/v1/{foo}/{bar}", func(_ http.ResponseWriter, r *http.Request) {
 		var foo string
 		var bar int
 
@@ -29,7 +30,8 @@ func Test_Parse(t *testing.T) {
 	})
 
 	w := httptest.NewRecorder()
-	request, err := http.NewRequest(http.MethodGet, "/v1/blah/31", nil)
+	ctx := context.Background()
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, "/v1/blah/31", nil)
 	must.NoError(t, err)
 
 	router.ServeHTTP(w, request)

@@ -1,6 +1,7 @@
 package formdata
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"testing"
@@ -83,7 +84,8 @@ func Test_Parse_singles_Or(t *testing.T) {
 }
 
 func Test_Parse_HTMLForm(t *testing.T) {
-	request, err := http.NewRequest(http.MethodPost, "/", nil)
+	ctx := context.Background()
+	request, err := http.NewRequestWithContext(ctx, http.MethodPost, "/", nil)
 	must.NoError(t, err)
 
 	request.PostForm = make(url.Values)
@@ -113,7 +115,8 @@ func Test_Parse_HTMLForm(t *testing.T) {
 }
 
 func Test_Parse_HTMLForm_not_ready(t *testing.T) {
-	request, err := http.NewRequest(http.MethodPost, "/", nil)
+	ctx := context.Background()
+	request, err := http.NewRequestWithContext(ctx, http.MethodPost, "/", nil)
 	must.NoError(t, err)
 
 	var one string
