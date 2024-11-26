@@ -24,11 +24,7 @@ var (
 
 func Parse(data url.Values, schema Schema) error {
 	for name, parser := range schema {
-		values, exists := data[name]
-		if !exists {
-			return ErrFieldNotPresent
-		}
-
+		values := data[name]
 		if err := parser.Parse(values); err != nil {
 			return fmt.Errorf("%s: %w", ErrParseFailure.Error(), err)
 		}

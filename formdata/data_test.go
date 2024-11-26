@@ -117,6 +117,28 @@ func Test_Parse_HTMLForm(t *testing.T) {
 	must.True(t, four)
 }
 
+func Test_Parse_HTMLForm_optional(t *testing.T) {
+	ctx := context.Background()
+	request, err := http.NewRequestWithContext(ctx, http.MethodPost, "/", nil)
+	must.NoError(t, err)
+
+	request.PostForm = make(url.Values)
+	request.PostForm.Set("one", "1")
+
+	var (
+		one string
+		two string
+	)
+
+	err2 := ParseForm(request, Schema{
+		"one": String(&one),
+		"two": StringOr(&two, "alternate"),
+	})
+	must.NoError(t, err2)
+	must.Eq(t, "1", one)
+	must.Eq(t, "alternate", two)
+}
+
 func Test_Parse_HTMLForm_not_ready(t *testing.T) {
 	ctx := context.Background()
 	request, err := http.NewRequestWithContext(ctx, http.MethodPost, "/", nil)
